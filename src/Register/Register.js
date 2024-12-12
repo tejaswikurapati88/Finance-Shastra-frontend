@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import { Button } from "@mui/material";
@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import logo from "../assest/Logo design (1).png";
+import Cookies from 'js-cookie'
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,16 @@ function Register() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(()=>{
+      const checkUserAuthentication=()=>{
+          const cookiejwtToken= Cookies.get("jwtToken")
+          if (cookiejwtToken !== undefined){
+              navigate('/home')
+          }
+      }
+      checkUserAuthentication()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;

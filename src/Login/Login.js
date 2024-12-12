@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { FcGoogle } from "react-icons/fc";
@@ -18,6 +18,17 @@ function Login() {
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const navigate = useNavigate();
+  const [loginError, setLoginError]= useState('')
+
+  useEffect(()=>{
+    const checkUserAuthentication=()=>{
+        const cookiejwtToken= Cookies.get("jwtToken")
+        if (cookiejwtToken !== undefined){
+            navigate('/home')
+        }
+    }
+    checkUserAuthentication()
+  }, [])
 
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -71,12 +82,15 @@ function Login() {
      }
      const response= await fetch('http://localhost:3000/api/signin', options)
      if (!response.ok){
-
+        const {message}= await response.json()
+        setLoginError(message)
      }else{
         const {jwtToken}= await response.json()
         Cookies.set("jwtToken", jwtToken)
         alert("Login Successful");
         navigate("/home");
+        setEmail('')
+        setPassword('')
      }
     }
   };
@@ -215,6 +229,7 @@ function Login() {
   </a>
 </div>
               <button type="submit" className="sign-in-btn">Sign In</button>
+              <p className="error-text">{loginError}</p>
             </form>
           )}
 

@@ -75,7 +75,7 @@ function Register() {
         localStorage.setItem(formData.email, JSON.stringify(formData));
         
       }*/
-     const url= 'http://localhost:3000/api/register'
+     const url= 'https://financeshastra-backend-i18y.onrender.com/api/register'
      const options={
         method: "POST",
         headers: {

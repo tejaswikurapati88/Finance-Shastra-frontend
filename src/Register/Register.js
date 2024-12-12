@@ -36,7 +36,7 @@ function Register() {
     return passwordPattern.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isValid = true;
 
@@ -57,15 +57,32 @@ function Register() {
     }
 
     if (isValid) {
-      const existingUserData = JSON.parse(localStorage.getItem(formData.email));
+      /*const existingUserData = JSON.parse(localStorage.getItem(formData.email));
       if (existingUserData) {
         alert("User already registered with this email.");
       } else {
         localStorage.setItem(formData.email, JSON.stringify(formData));
+        
+      }*/
+     const url= 'http://localhost:3000/api/register'
+     const options={
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      }
+      const response= await fetch(url, options)
+      if (!response.ok){
+        alert("User already registered with this email.");
+        setFormData({name: "", email: '', password: ''})
+      }else{
         alert("Sign-Up Successful");
         navigate("/");
+        setFormData({name: "", email: '', password: ''})
       }
     }
+    
   };
 
   const handleSignInClick = () => {

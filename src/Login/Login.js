@@ -6,6 +6,7 @@ import { FaLinkedin } from "react-icons/fa";
 import { Button } from "@mui/material";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Eye icons
 import logo from "./../assest/Logo design (1).png";
+import Cookies from 'js-cookie'
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ function Login() {
     return passwordPattern.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isValid = true;
 
@@ -47,17 +48,36 @@ function Login() {
     }
 
     if (isValid && !isForgotPassword) {
-      const userRegistrationData = JSON.parse(localStorage.getItem(email));
+      /*const userRegistrationData = JSON.parse(localStorage.getItem(email));
       if (userRegistrationData && userRegistrationData.email === email) {
         if (userRegistrationData.password === password) {
-          alert("Login Successful");
-          navigate("/home");
+          
         } else {
           setPasswordError("Incorrect password.");
         }
       } else {
         setEmailError("Email not found. Please register.");
-      }
+      }*/
+     const userDetails={
+        "email": email,
+        "password": password
+     }
+     const options= {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userDetails)
+     }
+     const response= await fetch('http://localhost:3000/api/signin', options)
+     if (!response.ok){
+
+     }else{
+        const {jwtToken}= await response.json()
+        Cookies.set("jwtToken", jwtToken)
+        alert("Login Successful");
+        navigate("/home");
+     }
     }
   };
 
